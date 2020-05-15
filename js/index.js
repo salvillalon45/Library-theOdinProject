@@ -1,7 +1,7 @@
 console.log("Inside index.js");
 
-let libraryContainer = document.querySelector(".library-container");
 let myLibrary = [];
+let bookReadFlag = 0;
 
 function Book(title, author, pages, read) {
     // The constructor
@@ -11,20 +11,56 @@ function Book(title, author, pages, read) {
     this.read = read;
 }
 
-function processNewBookInsertion() {
+Book.prototype.updateRead = function() {
+    console.log("Inside updateRead()");
+    console.log("What is this.read:: " + this.read);
+    let currentStateRead = this.read;
+
+    if (currentStateRead === "I've read it") {
+        this.read = "Not read";
+    }
+    else {
+        this.read = "I've read it";
+    }
+};
+
+const addButton = document.querySelector(".add");
+addButton.addEventListener("click", () => {
+
+    let newTitle = document.forms["BookForm"]["title"];
+    let newAuthor = document.forms["BookForm"]["author"];
+    let newPages = document.forms["BookForm"]["pages"];
+    let newRead = document.forms["BookForm"]["read"];
+
+    addBookToLibrary(newTitle.value, newAuthor.value, newPages.value, newRead.value);
+    render();
+    clearFormFields();
+    closeForm();
+});
+
+function openForm() {
     let formPage = document.querySelector(".form-page");
     formPage.classList.remove("hidden");
+
+    // formPage.setAttribute("style", "width: 200px");
+    // formPage.setAttribute("style", "position: absolute");
+    // formPage.setAttribute("style", "z-index: 1");
 }
 
-function cancelNewBookProcessInsertion() {
+function closeForm() {
     let formPage = document.querySelector(".form-page");
     formPage.classList.add("hidden");
+    clearFormFields();
 }
 
-function addBookToLibrary() {
-    let newBook = prompt("Enter name of book: ", "");
+function clearFormFields() {
+    let newRead = document.forms["BookForm"].reset();
+}
+
+function addBookToLibrary(title, author, pages, read) {
+    let newBook = new Book(title, author, pages, read);
     myLibrary.push(newBook);
-    console.log("My Library:: " + myLibrary);
+    console.log("myLibrary:: " + myLibrary);
     // if (validateInput(newBook)) {
     //     break;
     // }
@@ -32,43 +68,64 @@ function addBookToLibrary() {
 
 function render() {
 
+    let libraryContainer = document.querySelector(".library-container");
+    libraryContainer.innerHTML = '';
+
     for (let i = 0; i < myLibrary.length; i++) {
-        let currentBook = myLibrary[i];
+        const currentBook = myLibrary[i];
 
-        let bookCard = document.createElement("div");
-        let bookTitle = document.createElement("p");
-        let bookAuthor = document.createElement("p");
-        let bookPages = document.createElement("p");
-        let bookRead = document.createElement("p");
+        const bookCard = document.createElement("div");
+        const bookTitle = document.createElement("p");
+        const bookAuthor = document.createElement("p");
+        const bookPages = document.createElement("p");
 
-        let bookCardItem = "book-card-" + i;
-        bookCard.classList.add(bookCardItem);
+        const bookCardTools = document.createElement("div");
+        const bookRead = document.createElement("p");
+        const bookTrash = document.createElement("p");
+        const bookCheckMark = document.createElement("p");
+
+        bookCard.classList.add("book-card");
+        bookCard.id = String(i);
         bookTitle.classList.add("book-title");
         bookAuthor.classList.add("book-author");
         bookPages.classList.add("book-pages");
+
+        bookCardTools.classList.add("book-card-tools-container");
         bookRead.classList.add("book-read");
+        bookCheckMark.addEventListener("click", (e) => {
+            console.log("this.title " + currentBook.title);
+            currentBook.updateRead();
+            render();
+        });
 
         bookTitle.innerHTML = currentBook.title;
         bookAuthor.innerHTML = currentBook.author;
         bookPages.innerHTML = currentBook.pages + " pages";
         bookRead.innerHTML = currentBook.read;
+        bookTrash.innerHTML = '<i class="fa fa-trash" aria-hidden="true"></i>';
+        bookCheckMark.innerHTML = '<i class="fa fa-check" aria-hidden="true"></i>';
 
         bookCard.append(bookTitle);
         bookCard.append(bookAuthor);
         bookCard.append(bookPages);
-        bookCard.append(bookRead);
+
+        bookCardTools.append(bookRead);
+        bookCardTools.append(bookTrash);
+        bookCardTools.append(bookCheckMark);
+
+        bookCard.append(bookCardTools);
 
         libraryContainer.append(bookCard);
     }
-
 }
 
-let title = "The Hobbit";
-let author = "J.R.R. Tolkien";
-let pages = 295;
-let read = "read yet";
-myLibrary = [new Book(title, author, pages, read), new Book(title, author, pages, read), new Book(title, author, pages, read), new Book(title, author, pages, read), new Book(title, author, pages, read)];
+addBookToLibrary("The Fellowship of the Ring", "J.R.R. Tolkien", 423, "Not read");
+addBookToLibrary("Flowers for Algernon", "Daniel Keyes", 311, "Not read");
+addBookToLibrary("Alice in Wonderland", "Lewis Carroll", 200, "Not read");
+addBookToLibrary("1984", "George Orwell", 328, false);
+addBookToLibrary("Slaughterhouse-Five", "Kurt Vonnegut", 215, "I've read it");
 render();
+
 
 function validateInput(input) {
     // // If they enter something that is not a number. If they press the esc key, it will return null, but since we are converting the prompt
