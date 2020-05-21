@@ -47,7 +47,7 @@ body {
 
 .book-title {
   font-weight: bold;
-  font-size: 25px;
+  font-size: 15px;
   overflow-wrap: break-word;
 }
 
@@ -88,7 +88,7 @@ form {
   align-items: start;
   width: 250px;
   padding: 25px;
-  background-color: #3a405c;
+  background-color: #131a3d;
   top: 50%;
   left: 50%;
   margin-top: -170px;
@@ -196,3 +196,45 @@ label {
 /*    width: 250px;*/
 /*  }*/
 /*}*/
+
+.library-button {
+  display: flex;
+  justify-content: center;
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#form-btn {
+  width: 178px;
+  border-radius: 10px;
+  background-color: #99949c;
+  border: none;
+  padding: 15px 32px;
+  text-align: center;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  font-family: 'Roboto Slab', serif;
+}
+
+#form-btn:hover {
+  background-color: #b5b0b8;
+}
+
+.cancel, .add {
+  border-radius: 10px;
+  background-color: #f8ecff;
+  border: none;
+  padding: 11px 13px;
+  text-align: center;
+  display: inline-block;
+  font-family: 'Roboto Slab', serif;
+}
+
+.cancel:hover, .add:hover {
+  background-color: #948b99;
+}

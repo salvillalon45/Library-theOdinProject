@@ -1,7 +1,10 @@
+// import firebase from "./firebase/firebaseConfig";
+
 console.log("Inside index.js");
 
 let myLibrary = [];
-let bookReadFlag = 0;
+// Get a reference to the database service
+
 
 function Book(title, author, pages, read) {
     // The constructor
@@ -12,8 +15,6 @@ function Book(title, author, pages, read) {
 }
 
 Book.prototype.updateRead = function() {
-    console.log("Inside updateRead()");
-    console.log("What is this.read:: " + this.read);
     let currentStateRead = this.read;
 
     if (currentStateRead === "I've read it") {
@@ -24,6 +25,10 @@ Book.prototype.updateRead = function() {
     }
 };
 
+Book.prototype.removeBook = function(index) {
+    myLibrary.splice(index, 1);
+};
+
 const addButton = document.querySelector(".add");
 addButton.addEventListener("click", () => {
 
@@ -32,19 +37,20 @@ addButton.addEventListener("click", () => {
     let newPages = document.forms["BookForm"]["pages"];
     let newRead = document.forms["BookForm"]["read"];
 
-    addBookToLibrary(newTitle.value, newAuthor.value, newPages.value, newRead.value);
-    render();
-    clearFormFields();
-    closeForm();
+    if (newTitle.value.length === 0 || newAuthor.value.length === 0 || newPages.value === 0) {
+        alert("Need to include fill in the form!");
+    }
+    else {
+        addBookToLibrary(newTitle.value, newAuthor.value, newPages.value, newRead.value);
+        render();
+        closeForm();
+    }
+
 });
 
 function openForm() {
     let formPage = document.querySelector(".form-page");
     formPage.classList.remove("hidden");
-
-    // formPage.setAttribute("style", "width: 200px");
-    // formPage.setAttribute("style", "position: absolute");
-    // formPage.setAttribute("style", "z-index: 1");
 }
 
 function closeForm() {
@@ -54,12 +60,20 @@ function closeForm() {
 }
 
 function clearFormFields() {
-    let newRead = document.forms["BookForm"].reset();
+    document.forms["BookForm"].reset();
 }
 
 function addBookToLibrary(title, author, pages, read) {
     let newBook = new Book(title, author, pages, read);
     myLibrary.push(newBook);
+
+    // firebase.database().ref().child("books").set({
+    //     title : title,
+    //     author : author,
+    //     pages : pages,
+    //     read : read
+    // });
+
     console.log("myLibrary:: " + myLibrary);
     // if (validateInput(newBook)) {
     //     break;
@@ -85,17 +99,21 @@ function render() {
         const bookCheckMark = document.createElement("p");
 
         bookCard.classList.add("book-card");
-        bookCard.id = String(i);
         bookTitle.classList.add("book-title");
         bookAuthor.classList.add("book-author");
         bookPages.classList.add("book-pages");
 
         bookCardTools.classList.add("book-card-tools-container");
+        bookCardTools.id = String(i);
         bookRead.classList.add("book-read");
         bookCheckMark.addEventListener("click", (e) => {
-            console.log("this.title " + currentBook.title);
             currentBook.updateRead();
             render();
+        });
+
+        bookTrash.addEventListener("click", (e) => {
+           currentBook.removeBook(bookCardTools.id);
+           render();
         });
 
         bookTitle.innerHTML = currentBook.title;
@@ -122,7 +140,7 @@ function render() {
 addBookToLibrary("The Fellowship of the Ring", "J.R.R. Tolkien", 423, "Not read");
 addBookToLibrary("Flowers for Algernon", "Daniel Keyes", 311, "Not read");
 addBookToLibrary("Alice in Wonderland", "Lewis Carroll", 200, "Not read");
-addBookToLibrary("1984", "George Orwell", 328, false);
+addBookToLibrary("1984", "George Orwell", 328, "I've read it");
 addBookToLibrary("Slaughterhouse-Five", "Kurt Vonnegut", 215, "I've read it");
 render();
 
