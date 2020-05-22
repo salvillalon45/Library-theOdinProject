@@ -1,18 +1,9 @@
 /* Overall */
 /* --------------------------------------- */
-/* Change the font of the website */
 html, body, div {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-}
-
-.intro {
-  /*font-family: 'Sen', sans-serif;*/
-}
-
-.intro, .library-container {
-  padding: 10px;
 }
 
 body {
@@ -20,13 +11,45 @@ body {
   background-color: #f0f0f0;
 }
 
+button, i {
+  cursor: pointer;
+}
+
+.intro, .contact-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+}
+
+h1 {
+  font-size: 45px;
+}
+
+.contact-container  {
+  margin-top: -40px;
+}
+
+/* Library Content */
+/* --------------------------------------- */
+button, i {
+  cursor: pointer;
+}
+
 .library-container {
+  padding: 10px;
   display: grid;
-  /*grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));*/
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   grid-gap: 1rem;
 }
 
+.library-button {
+  display: flex;
+  justify-content: center;
+}
+
+/* Book Card Content */
+/* --------------------------------------- */
 .book-card {
   background: #0D122B;
   padding: 1.5rem;
@@ -38,7 +61,6 @@ body {
 
 .book-title, .book-author, .book-pages, .book-read {
   color: white;
-  /*justify-content: center;*/
 }
 
 .book-read {
@@ -59,10 +81,6 @@ body {
   margin-right: 10px;
 }
 
-button, i {
-  cursor: pointer;
-}
-
 .fa-trash:hover, .fa-check:hover {
   color: white;
 }
@@ -73,9 +91,19 @@ button, i {
   align-items: flex-end;
 }
 
+.radio-container, .button-container {
+  padding: 5px;
+}
+
+.button-container .add {
+  margin-left: 10px;
+}
+
+/* Form Page Content */
+/* --------------------------------------- */
 .form-page {
   position: fixed;
-  bottom: 0%;
+  bottom: 0;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.8);
@@ -103,109 +131,8 @@ label {
   padding: 5px;
 }
 
-.radio-container, .button-container {
-  padding: 5px;
-}
-
-.button-container .add {
-  margin-left: 10px;
-}
-
 .hidden {
   display: none;
-}
-
-/* GitHub Button */
-/* --------------------------------------- */
-#github-btn {
-  width: 140px;
-  background-color: #573fc4;
-  font-weight: bold;
-  color: white;
-  border: none;
-  padding: 15px 32px;
-  text-align: center;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  cursor: pointer;
-  font-family: 'Sen', sans-serif;
-}
-
-#github-btn:hover {
-  background-color: #2807b8;
-}
-
-#github-btn a {
-  text-decoration: none;
-  color: white;
-}
-
-/*@media only screen and (max-width: 1000px) {*/
-
-/*  .time-container {*/
-/*    text-align: center;*/
-/*    font-size: 150px;*/
-/*    margin-bottom: -50px;*/
-/*    font-family: 'Roboto Mono', monospace;*/
-/*  }*/
-
-/*  .message-container {*/
-/*    text-align: center;*/
-/*    font-size: 90px;*/
-/*    margin-top: -40px;*/
-/*    margin-bottom: -50px;*/
-/*  }*/
-
-/*  .adjust-text {*/
-/*    padding-right: 50px;*/
-/*    font-size: 50px;*/
-/*    font-weight: bold;*/
-/*  }*/
-
-/*  .session-text, .break-text, .long-break-text {*/
-/*    font-size: 35px;*/
-/*  }*/
-
-/*  .intro h1 {*/
-/*    font-size: 70px;*/
-/*    text-align: center;*/
-/*  }*/
-
-/*  .intro p, .intro h2  {*/
-/*    font-size: 50px;*/
-/*    text-align: center;*/
-/*  }*/
-
-/*  .control-button {*/
-/*    font-size: 5rem;*/
-/*  }*/
-
-/*  .circle {*/
-/*    width: 40px;*/
-/*    height: 40px;*/
-/*    border-radius: 20px;*/
-/*    overflow: hidden;*/
-/*    margin: 10px;*/
-/*    border-style: solid;*/
-/*    border-color: coral;*/
-/*  }*/
-
-/*  #github-btn {*/
-/*    font-size: 40px;*/
-/*    width: 250px;*/
-/*  }*/
-/*}*/
-
-.library-button {
-  display: flex;
-  justify-content: center;
-}
-
-.intro {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 
 #form-btn {
@@ -237,4 +164,30 @@ label {
 
 .cancel:hover, .add:hover {
   background-color: #948b99;
+}
+
+/* GitHub Button */
+/* --------------------------------------- */
+#github-btn {
+  width: 140px;
+  background-color: #573fc4;
+  font-weight: bold;
+  color: white;
+  border: none;
+  padding: 15px 32px;
+  text-align: center;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  font-family: 'Sen', sans-serif;
+}
+
+#github-btn:hover {
+  background-color: #2807b8;
+}
+
+#github-btn a {
+  text-decoration: none;
+  color: white;
 }

@@ -11,15 +11,17 @@
     <link rel="stylesheet" href="css/font-awesome-4.7.0/font-awesome-4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="css/index.css">
 </head>
-    <body>
-        <main>
-            <div class="intro">
-                <h1>Library</h1>
+    <main>
+        <div class="intro">
+            <h1>Library</h1>
+
+            <div class="contact-container">
                 <h2>Made by <a href="https://salvillalon45.github.io/">Salvador Villalon</a></h2>
                 <button id="github-btn"><a href="https://github.com/salvillalon45/theOdinProject-Library">The Code</a></button>
             </div>
+        </div>
 
-            <div class="form-page hidden">
+        <div class="form-page hidden">
                 <form name="BookForm">
                     <label for="title">Title:</label>
                     <input type="text" id="title" name="title">
@@ -58,15 +60,15 @@
             </div>
 
         </main>
+
+        <!-- The core Firebase JS SDK is always required and must be listed first -->
+        <script src="https://www.gstatic.com/firebasejs/7.14.4/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.14.4/firebase-database.js"></script>
+
+        <!-- TODO: Add SDKs for Firebase products that you want to use https://firebase.google.com/docs/web/setup#available-libraries -->
+        <script src="https://www.gstatic.com/firebasejs/7.14.4/firebase-analytics.js"></script>
+
+        <script src="firebase/firebaseConfig.js"></script>
+        <script src="js/index.js"></script>
     </body>
-    <!-- The core Firebase JS SDK is always required and must be listed first -->
-    <script src="https://www.gstatic.com/firebasejs/7.14.4/firebase-app.js"></script>
-
-    <!-- TODO: Add SDKs for Firebase products that you want to use
-     https://firebase.google.com/docs/web/setup#available-libraries -->
-    <script src="https://www.gstatic.com/firebasejs/7.14.4/firebase-analytics.js"></script>
-
-    <script src="firebase/firebaseConfig.js"></script>
-    <script src="js/index.js"></script>
-
 </html>

@@ -1,10 +1,9 @@
-// import firebase from "./firebase/firebaseConfig";
-
 console.log("Inside index.js");
 
+const database = firebase.database();
+let databaseData = "";
 let myLibrary = [];
-// Get a reference to the database service
-
+let debug = 0;
 
 function Book(title, author, pages, read) {
     // The constructor
@@ -14,8 +13,12 @@ function Book(title, author, pages, read) {
     this.read = read;
 }
 
-Book.prototype.updateRead = function() {
+Book.prototype.updateRead = function(index) {
     let currentStateRead = this.read;
+
+    let databaseArrayKeys = Object.keys(databaseData);
+    let key = databaseArrayKeys[index];
+    let databaseReferenceUpdate = database.ref("books/" + key);
 
     if (currentStateRead === "I've read it") {
         this.read = "Not read";
@@ -23,15 +26,30 @@ Book.prototype.updateRead = function() {
     else {
         this.read = "I've read it";
     }
+
+    // Update the value read in the database for the selected book
+    databaseReferenceUpdate.update({
+       read : this.read
+    });
 };
 
 Book.prototype.removeBook = function(index) {
-    myLibrary.splice(index, 1);
+    let databaseArrayKeys = Object.keys(databaseData);
+    let key = databaseArrayKeys[index];
+    let databaseReferenceRemove = database.ref("books/" + key);
+
+    // Remove the selected book from the database
+    databaseReferenceRemove.remove()
+        .then(function() {
+            console.log("Remove succeeded.")
+        })
+        .catch(function(error) {
+            console.log("Remove failed: " + error.message)
+        });
 };
 
 const addButton = document.querySelector(".add");
 addButton.addEventListener("click", () => {
-
     let newTitle = document.forms["BookForm"]["title"];
     let newAuthor = document.forms["BookForm"]["author"];
     let newPages = document.forms["BookForm"]["pages"];
@@ -45,7 +63,6 @@ addButton.addEventListener("click", () => {
         render();
         closeForm();
     }
-
 });
 
 function openForm() {
@@ -63,100 +80,94 @@ function clearFormFields() {
     document.forms["BookForm"].reset();
 }
 
+function pushToDatabase(title, author, pages, read) {
+    // Insert a new book into the database
+    let reference = database.ref("books");
+    let newReference = reference.push();
+    newReference.set({
+        title : title,
+        author : author,
+        pages : pages,
+        read : read
+    });
+}
+
 function addBookToLibrary(title, author, pages, read) {
     let newBook = new Book(title, author, pages, read);
     myLibrary.push(newBook);
-
-    // firebase.database().ref().child("books").set({
-    //     title : title,
-    //     author : author,
-    //     pages : pages,
-    //     read : read
-    // });
-
-    console.log("myLibrary:: " + myLibrary);
-    // if (validateInput(newBook)) {
-    //     break;
-    // }
+    pushToDatabase(title, author, pages, read);
 }
 
 function render() {
-
     let libraryContainer = document.querySelector(".library-container");
     libraryContainer.innerHTML = '';
 
-    for (let i = 0; i < myLibrary.length; i++) {
-        const currentBook = myLibrary[i];
+    let databaseReference = database.ref("books");
 
-        const bookCard = document.createElement("div");
-        const bookTitle = document.createElement("p");
-        const bookAuthor = document.createElement("p");
-        const bookPages = document.createElement("p");
+    databaseReference.on("value", function (snapshot) {
 
-        const bookCardTools = document.createElement("div");
-        const bookRead = document.createElement("p");
-        const bookTrash = document.createElement("p");
-        const bookCheckMark = document.createElement("p");
+        // Get all the values in the database
+        databaseData = snapshot.val();
 
-        bookCard.classList.add("book-card");
-        bookTitle.classList.add("book-title");
-        bookAuthor.classList.add("book-author");
-        bookPages.classList.add("book-pages");
+        let databaseArrayValues = Object.values(databaseData);
 
-        bookCardTools.classList.add("book-card-tools-container");
-        bookCardTools.id = String(i);
-        bookRead.classList.add("book-read");
-        bookCheckMark.addEventListener("click", (e) => {
-            currentBook.updateRead();
-            render();
-        });
+        for (let i = 0; i < databaseArrayValues.length; i++) {
+            const databaseBook = databaseArrayValues[i];
+            let currentBook = new Book(databaseBook.title, databaseBook.author, databaseBook.pages, databaseBook.read);
 
-        bookTrash.addEventListener("click", (e) => {
-           currentBook.removeBook(bookCardTools.id);
-           render();
-        });
+            const bookCard = document.createElement("div");
+            const bookTitle = document.createElement("p");
+            const bookAuthor = document.createElement("p");
+            const bookPages = document.createElement("p");
 
-        bookTitle.innerHTML = currentBook.title;
-        bookAuthor.innerHTML = currentBook.author;
-        bookPages.innerHTML = currentBook.pages + " pages";
-        bookRead.innerHTML = currentBook.read;
-        bookTrash.innerHTML = '<i class="fa fa-trash" aria-hidden="true"></i>';
-        bookCheckMark.innerHTML = '<i class="fa fa-check" aria-hidden="true"></i>';
+            const bookCardTools = document.createElement("div");
+            const bookRead = document.createElement("p");
+            const bookTrash = document.createElement("p");
+            const bookCheckMark = document.createElement("p");
 
-        bookCard.append(bookTitle);
-        bookCard.append(bookAuthor);
-        bookCard.append(bookPages);
+            bookCard.classList.add("book-card");
+            bookTitle.classList.add("book-title");
+            bookAuthor.classList.add("book-author");
+            bookPages.classList.add("book-pages");
 
-        bookCardTools.append(bookRead);
-        bookCardTools.append(bookTrash);
-        bookCardTools.append(bookCheckMark);
+            bookCardTools.classList.add("book-card-tools-container");
+            bookCardTools.id = String(i);
+            bookRead.classList.add("book-read");
+            bookCheckMark.addEventListener("click", (e) => {
+                currentBook.updateRead(bookCardTools.id);
+                render();
+            });
 
-        bookCard.append(bookCardTools);
+            bookTrash.addEventListener("click", (e) => {
+                currentBook.removeBook(bookCardTools.id);
+                render();
+            });
 
-        libraryContainer.append(bookCard);
-    }
+            bookTitle.innerHTML = currentBook.title;
+            bookAuthor.innerHTML = currentBook.author;
+            bookPages.innerHTML = currentBook.pages + " pages";
+            bookRead.innerHTML = currentBook.read;
+            bookTrash.innerHTML = '<i class="fa fa-trash" aria-hidden="true"></i>';
+            bookCheckMark.innerHTML = '<i class="fa fa-check" aria-hidden="true"></i>';
+
+            bookCard.append(bookTitle);
+            bookCard.append(bookAuthor);
+            bookCard.append(bookPages);
+
+            bookCardTools.append(bookRead);
+            bookCardTools.append(bookTrash);
+            bookCardTools.append(bookCheckMark);
+
+            bookCard.append(bookCardTools);
+
+            libraryContainer.append(bookCard);
+        }
+    });
 }
 
-addBookToLibrary("The Fellowship of the Ring", "J.R.R. Tolkien", 423, "Not read");
-addBookToLibrary("Flowers for Algernon", "Daniel Keyes", 311, "Not read");
-addBookToLibrary("Alice in Wonderland", "Lewis Carroll", 200, "Not read");
-addBookToLibrary("1984", "George Orwell", 328, "I've read it");
-addBookToLibrary("Slaughterhouse-Five", "Kurt Vonnegut", 215, "I've read it");
+debug === 1 && (addBookToLibrary("The Fellowship of the Ring", "J.R.R. Tolkien", 423, "Not read"));
+debug === 1 && (addBookToLibrary("Flowers for Algernon", "Daniel Keyes", 311, "Not read"));
+debug === 1 && (addBookToLibrary("Alice in Wonderland", "Lewis Carroll", 200, "Not read"));
+debug === 1 && (addBookToLibrary("1984", "George Orwell", 328, "I've read it"));
+debug === 1 && (addBookToLibrary("Slaughterhouse-Five", "Kurt Vonnegut", 215, "I've read it"));
 render();
-
-
-function validateInput(input) {
-    // // If they enter something that is not a number. If they press the esc key, it will return null, but since we are converting the prompt
-    // // response into a Number type it will convert null into 0 (zero)
-    // if (isNaN(input) || input === 0) {
-    //     return false;
-    // }
-    // // If they enter a number that is too big
-    // else if (input >= 1000) {
-    //     return false;
-    // }
-    // // Input is correct
-    // else {
-    //     return true;
-    // }
-}
