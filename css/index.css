@@ -191,3 +191,10 @@ label {
   text-decoration: none;
   color: white;
 }
+
+/*@media only screen and (max-width: 1000px) {*/
+/*  .library-container {*/
+/*    margin-left: 0;*/
+/*    margin-right: 0;*/
+/*  }*/
+/*}*/
