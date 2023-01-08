@@ -3,6 +3,8 @@
 
 # Summary
 Create a small library app that allows users to enter the books they have read
+- Project Task: [The Odin Project - Library](https://www.theodinproject.com/courses/javascript/lessons/library)
+- View Project: https://salvillalon45.github.io/theOdinProject-Library/
 
 ### Implementation 
 - Used Object constructors to create new library instances and organize code
@@ -15,8 +17,6 @@ Create a small library app that allows users to enter the books they have read
 
 -   [Roboto Slab](https://fonts.google.com/specimen/Roboto+Slab?query=Roboto+Slab)
 -   [Sen](https://fonts.google.com/specimen/Sen)
-
-You can find more on the project here: [The Odin Project - Library](https://www.theodinproject.com/courses/javascript/lessons/library)
 
 # Technologies:
   - HTML
